@@ -26,7 +26,7 @@ class MissionOneTest(TestCase):
         """
         self.assertEqual(1 + 1, 3)
 
-    def test_auth(self)
+    def test_auth(self):
         """
         REQUIREMENT: All API requests MUST BE authenticated using simple username/password authentication.
 
