@@ -50,11 +50,12 @@ class MissionOneTest(TestCase):
 
         # do the modification
         c = Client()
-        response = c.put('/player/%s' % pk, {
+        response = c.put('/users/%s/' % pk, {
             'field': 'nickname',
             'value': 'superman',
         })
         data = json.loads(response.content)
+        print response
 
         # verify we didn't return an error
         self.assertFalse(data['error'])
@@ -74,7 +75,7 @@ class MissionOneTest(TestCase):
         Verifies that an empty post fails.
         """
         c = Client()
-        response = c.post('/player/', { })
+        response = c.post('/users/', { })
         data = json.loads(response.content)
         self.assertTrue(data['error'])
 

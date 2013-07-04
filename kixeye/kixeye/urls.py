@@ -11,6 +11,6 @@ urlpatterns = patterns('',
     # url(r'^kixeye/', include('kixeye.foo.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^users/(?P<player_id>\d+)/$', views.edit_player), 
     url(r'^users/', views.player), 
-    url(r'^users/(?P<player_id>/$', views.player), 
 )
