@@ -8,3 +8,7 @@ ipython==0.13.2
 readline==6.2.4.1
 six==1.3.0
 wsgiref==0.1.2
+
+# RikerIpsum is my own module i wrote to provision test data
+# http://ben174.github.io/rikeripsum/
+RikerIpsum==1.1

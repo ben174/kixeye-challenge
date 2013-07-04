@@ -17,8 +17,9 @@ Mission I, Design and implement REST API for following specs:
  
     Create User
         POST    /users
-        parameters:             //Content-Type: application/json
-            {
+        parameters:             
+   //Content-Type: application/json
+   {
                 “first”: <first_name>,
                 “last”: <last_name>,
                 “nickname”: <nickname>
@@ -30,7 +31,7 @@ Mission I, Design and implement REST API for following specs:
         “time”: <timestamp>,
         “userid”: <userid>          
    }
-            {
+{
                 “error”: true,              //failure
                 “time”: <timestamp>,
                 “msg”: <error_description>
@@ -38,8 +39,8 @@ Mission I, Design and implement REST API for following specs:
 Modify User
 PUT  /users/<userid>
         parameters:
-        //Content-Type: application/json
-        {
+    //Content-Type: application/json
+    {
             “field”: <field_being_modified>,
             “value”: <new_value>
    }

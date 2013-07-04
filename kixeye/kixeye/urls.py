@@ -15,10 +15,9 @@ class PlayerViewSet(viewsets.ModelViewSet):
 class BattleLogViewSet(viewsets.ModelViewSet):
     model = Group
 
-# Routers provide an easy way of automatically determining the URL conf
 router = routers.DefaultRouter()
-router.register(r'players', views.PlayerViewSet)
-router.register(r'battlelogs', views.BattleLogViewSet)
+#router.register(r'players', views.PlayerViewSet)
+#router.register(r'battlelogs', views.BattleLogViewSet)
 
 urlpatterns = patterns('',
     # Examples:
@@ -30,3 +29,9 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^', include(router.urls)),
 )
+
+urlpatterns = patterns('tools.views',
+    url(r'^players/$', 'player_list'),
+    url(r'^players/(?P<pk>[0-9]+)$', 'player_detail'),
+)
+

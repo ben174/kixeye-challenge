@@ -1,5 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models import signals
+from django.contrib.auth.management import create_superuser
+from django.contrib.auth import models as auth_app
+import datetime
 
+# Prevent interactive question about wanting a superuser created.
+signals.post_syncdb.disconnect(
+    create_superuser,
+    sender=auth_app,
+    dispatch_uid = "django.contrib.auth.management.create_superuser"
+)
 
 class Player(models.Model): 
     """ A class to hold a Player, which is anyone who plays one of 
@@ -55,6 +66,9 @@ class Player(models.Model):
             self.loss_count += 1 
             self.win_streak = 0
         self.save()
+
+    def __unicode__(self): 
+        return "%s (%s, %s)" % (self.nickname, self.last_name, self.first_name)
 
 
 class BattleLog(models.Model): 
