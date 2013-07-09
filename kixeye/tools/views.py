@@ -1,10 +1,14 @@
 from rest_framework import viewsets, status
 from rest_framework import authentication, permissions
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, \
+    authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from rest_framework.authentication import SessionAuthentication, \
+    BasicAuthentication
+from rest_framework import permissions
 from tools.models import Player, BattleLog
 from tools.serializers import PlayerSerializer, BattleLogSerializer
 from django.views.decorators.csrf import csrf_exempt
@@ -16,32 +20,26 @@ from django.db.models import Q
 import datetime
 
 
-def player_search(request): 
-    nickname = request.GET.get('nickname')
-    try: 
-        player = Player.objects.get(nickname=nickname)
-    except Player.DoesNotExist:
-        raise Http404
-    return HttpResponseRedirect('/users/%s' % player.pk)
-
-
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes((BasicAuthentication,))
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 def player_list(request):
     """
     List all players, or create a new player.
     """
-    # Challenge requirements were a bit strange on this one, but I decided to take 
-    # them literally.  
-    # Based on the specifications, a POST to /users/<pk> should create a user, 
-    # but a GET should return a profile page. If I were designing specs, 
-    # I'd probably create unique URLS for each, to avoid confusion.
     if request.method == 'GET':
         players = Player.objects.all()
         serializer = PlayerSerializer(players, many=True)
         return JSONResponse(serializer.data)
-
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PlayerSerializer(data=data)
+        data = None
+        try: 
+            data = JSONParser().parse(request)
+            serializer = PlayerSerializer(data=data)
+        except: 
+            response = create_response(error=True, msg="Invalid post data")
+            return response
         if serializer.is_valid():
             serializer.save()
             response = create_response()
@@ -51,15 +49,10 @@ def player_list(request):
             return response
 
 
-def parse_date_string(date_string): 
-    try: 
-        y,m,d = date_string.split('-')
-        return datetime.date(int(y),int(m),int(d))
-    except:
-        return None
-
-# this isn't very DRY ... I should have probably made this view 
-# handle multiple classes. 
+@csrf_exempt
+@api_view(['GET', 'POST'])
+@authentication_classes((BasicAuthentication,))
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 def battle_list(request):
     """
     List all battles, or create a new battle.
@@ -94,17 +87,13 @@ def battle_list(request):
             return response
 
 
-def create_response(error=False, msg=False): 
-    ret = { 'time': datetime.datetime.now(), 'error': error, }
-    if error: 
-        ret['msg'] = msg
-    return JSONResponse(ret)
-
-
 @csrf_exempt
+@api_view(['GET', 'PUT'])
+@authentication_classes((BasicAuthentication,))
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 def player_detail(request, pk):
     """
-    Retrieve, update or delete a player instance.
+    Retrieve or update a player instance.
     """              
     player = None
     try:
@@ -138,6 +127,33 @@ def player_detail(request, pk):
     
         response = create_response(error=False)
         return response
+
+
+def player_search(request): 
+    """ 
+    Search for a player and resolve it to its proper url.
+    """
+    nickname = request.GET.get('nickname')
+    try: 
+        player = Player.objects.get(nickname=nickname)
+    except Player.DoesNotExist:
+        raise Http404
+    return HttpResponseRedirect('/users/%s' % player.pk)
+
+
+def create_response(error=False, msg=False): 
+    ret = { 'time': datetime.datetime.now(), 'error': error, }
+    if error: 
+        ret['msg'] = msg
+    return JSONResponse(ret)
+
+
+def parse_date_string(date_string): 
+    try: 
+        y,m,d = date_string.split('-')
+        return datetime.date(int(y),int(m),int(d))
+    except:
+        return None
 
 
 class JSONResponse(HttpResponse):

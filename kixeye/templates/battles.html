@@ -23,16 +23,18 @@
     <tbody>
       {% for battle in battles %}
       <tr>
-        {% if battle.winner == battle.attacker %}
-          <td class="success">{{ battle.attacker }}</td>
-        {% else %}
-          <td>{{ battle.attacker }}</td>
-        {% endif %}
-        {% if battle.winner == battle.defender %}
-          <td class="success">{{ battle.defender }}</td>
-        {% else %}
-          <td>{{ battle.defender }}</td>
-        {% endif %}
+        <td>
+          {% if battle.winner == battle.attacker %}
+            <i class="icon-star"></i>
+          {% endif %}
+          <a href="/users/{{ battle.attacker.pk }}">{{ battle.attacker }}</a>
+        </td>
+        <td>
+          {% if battle.winner == battle.defender %}
+            <i class="icon-star"></i>
+          {% endif %}
+          <a href="/users/{{ battle.defender.pk }}">{{ battle.defender }}</a>
+        </td>
         <td>{{ battle.start_time }}</td>
         <td>{{ battle.end_time }}</td>
       </tr>
