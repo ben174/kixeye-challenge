@@ -22,6 +22,8 @@ from django.contrib.auth.models import User
 
 adjs = [] 
 nouns = []
+firstnames = []
+lastnames = []
 
 def main(): 
     create_admin()
@@ -32,11 +34,17 @@ def main():
 
 def create_random_players(count): 
     for i in xrange(count): 
-        player = Player.objects.create(
-            first_name=random.choice(nouns), 
-            last_name = random.choice(nouns), 
-            nickname = random_username(), 
-        )
+        nickname = random_username() 
+        try: 
+            print "Creating player: %s" % nickname
+            player = Player.objects.create(
+                first_name = random.choice(firstnames), 
+                last_name = random.choice(lastnames), 
+                nickname = nickname
+            )
+        except: 
+            print "Error creating player: %s" % nickname
+
 
 def create_random_battles(count): 
     players = Player.objects.all()
@@ -84,12 +92,20 @@ def random_email(username):
 def load_words(): 
     global adjs
     global nouns
+    global firstnames
+    global lastnames
 
     f = open('data/adjectives.txt')
     adjs = [l.strip() for l in f.readlines()]
 
     f = open('data/nouns.txt')
     nouns = [l.strip() for l in f.readlines()]
+
+    f = open('data/firstnames.txt')
+    firstnames = [l.strip() for l in f.readlines()]
+
+    f = open('data/lastnames.txt')
+    lastnames = [l.strip() for l in f.readlines()]
 
 
 
