@@ -6,6 +6,7 @@ from rest_framework import viewsets, routers
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from tools import views
+from tools.models import Player
 admin.autodiscover()
 
 
@@ -15,9 +16,6 @@ class PlayerViewSet(viewsets.ModelViewSet):
 class BattleLogViewSet(viewsets.ModelViewSet):
     model = Group
 
-router = routers.DefaultRouter()
-#router.register(r'players', views.PlayerViewSet)
-#router.register(r'battlelogs', views.BattleLogViewSet)
 
 urlpatterns = patterns('',
     # Examples:
@@ -27,11 +25,11 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^', include(router.urls)),
 )
 
 urlpatterns = patterns('tools.views',
-    url(r'^players/$', 'player_list'),
-    url(r'^players/(?P<pk>[0-9]+)$', 'player_detail'),
+    url(r'^users/$', 'player_list'),
+    url(r'^users/(?P<pk>[0-9]+)$', 'player_detail'),
+    url(r'^battles/$', 'battle_list'),
 )
 

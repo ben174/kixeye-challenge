@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.test.client import Client
-from tools.models import Player
+from tools.models import Player, BattleLog
 import json
+import datetime
 
 
 def create_player(first_name, last_name, nickname): 
@@ -17,21 +18,28 @@ class MissionOneTest(TestCase):
         """
         Verifies that I can create a user using the REST API. 
         """
-        c = Client()
         first_name = 'Clark'
         last_name = 'Kent'
-        nickname = 'ckent'
-        response = c.post('/player/', {
+        nickname = 'clarkkent'
+
+        # do the POST request
+        c = Client()
+
+        post_data = {
             'first_name': first_name,
             'last_name': last_name,
             'nickname': nickname,
-        })
+        }
+        
+        response = c.post('/users/', content_type='application/json', 
+            data=json.dumps(post_data))
+        data = json.loads(response.content)
+
         player = Player.objects.get(
             first_name=first_name,
             last_name=last_name,
             nickname=nickname,
         )
-        data = json.loads(response.content)
         self.assertEqual(player.nickname, nickname)
         self.assertFalse(data['error'])
 
@@ -44,18 +52,20 @@ class MissionOneTest(TestCase):
         # create original user
         first_name = 'Clark'
         last_name = 'Kent'
-        nickname = 'ckent'
+        nickname = 'clark_kent'
         player = create_player(first_name, last_name, nickname)
         pk = player.pk
 
-        # do the modification
+        # do the PUT request
         c = Client()
-        response = c.put('/users/%s/' % pk, {
+
+        put_data = {
             'field': 'nickname',
             'value': 'superman',
-        })
+        }
+        
+        response = c.put('/users/%s' % pk, json.dumps(put_data))
         data = json.loads(response.content)
-        print response
 
         # verify we didn't return an error
         self.assertFalse(data['error'])
@@ -83,8 +93,61 @@ class MissionOneTest(TestCase):
     def test_create_battle_log(self): 
         """ 
         Verifies that I can create a battle log using the REST API.
+        POST /battles
+        parameters:
+        //Content-Type: application/json
+        {
+            "attacker": <attacker_userid>,
+            "defender": <defender_userid>,
+            "winner": <winner_userid>,
+            "start": <battle_start_time>,
+            "end": <battle_end_time>
+        }
         """
-        self.assertEqual(1 + 1, 3)
+        superman, _ = Player.objects.get_or_create(
+            first_name = 'Clark', 
+            last_name = 'Kent', 
+            nickname = 'superman', 
+        )
+
+        lex, _ = Player.objects.get_or_create(
+            first_name = 'Lex', 
+            last_name = 'Luthor', 
+            nickname = 'lex_luthor', 
+        )
+
+            
+        attacker = lex.pk
+        defender = superman.pk
+        # good always prevails
+        winner = superman.pk
+        start = datetime.datetime.now() - datetime.timedelta(days=1)
+        end = datetime.datetime.now() 
+
+        # do the POST request
+        c = Client()
+
+        post_data = {
+            'attacker': attacker,
+            'defender': defender,
+            'winner': winner,
+            'start_time': str(start),
+            'end_time': str(end),
+        }
+        
+        response = c.post('/battles/', content_type='application/json', 
+            data=json.dumps(post_data))
+        data = json.loads(response.content)
+
+        battle = BattleLog.objects.get(
+            attacker=attacker, 
+            defender=defender, 
+            winner=winner, 
+        )
+        # ensure the battle exists and that the winner was superman
+        self.assertEqual(battle.winner, Player.objects.get(pk=winner))
+        self.assertFalse(data['error'])
+
 
     def test_auth(self):
         """

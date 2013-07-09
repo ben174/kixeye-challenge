@@ -108,9 +108,9 @@ class BattleLog(models.Model):
         blank=False, 
     )
 
-
     def save(self):
-        if winner.pk != attacker.pk or winner.pk != defender.pk: 
+        if (self.winner.pk != self.attacker.pk) and (
+            self.winner.pk != self.defender.pk): 
             raise Exception("Winner must have been in the battle.")
         super(BattleLog, self).save()
 
