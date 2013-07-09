@@ -1,4 +1,11 @@
-# Django settings for kixeye project.
+from os.path import abspath, dirname, join
+
+# turn off ipython warning - http://stackoverflow.com/questions/11708821/django-ipython-sqlite-complains-about-naive-datetime
+import warnings
+import exceptions
+warnings.filterwarnings("ignore", category=exceptions.RuntimeWarning, module='django.db.backends.sqlite3', lineno=50)
+
+DIR = dirname(abspath(dirname(__file__)))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -52,7 +59,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = join(DIR, 'static_files')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -63,6 +70,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    join(DIR, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -107,6 +115,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    'templates/',
 )
 
 INSTALLED_APPS = (

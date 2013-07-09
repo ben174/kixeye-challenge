@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Player Profile: {{ player.nickname }}{% endblock %}
+{% block header %}
+{% endblock %}
+{% block nav-profile %}<li class="active"><a href="/profiles/profile">My Account</a></li>{% endblock %}
+{% block content %}
+  <div class="title">
+    <h1>Battle Listing</h1>
+    {% if start_time %}
+      <h2>{{ start_time }} - {{ end_time }}</h2>
+    {% endif %}
+  </div>
+  <table class="table table-striped">
+    <caption>Battle Listing</caption>
+    <thead>
+      <tr>
+        <th>Attacker</th>
+        <th>Defender</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for battle in battles %}
+      <tr>
+        {% if battle.winner == battle.attacker %}
+          <td class="success">{{ battle.attacker }}</td>
+        {% else %}
+          <td>{{ battle.attacker }}</td>
+        {% endif %}
+        {% if battle.winner == battle.defender %}
+          <td class="success">{{ battle.defender }}</td>
+        {% else %}
+          <td>{{ battle.defender }}</td>
+        {% endif %}
+        <td>{{ battle.start_time }}</td>
+        <td>{{ battle.end_time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

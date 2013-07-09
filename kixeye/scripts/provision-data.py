@@ -26,7 +26,8 @@ nouns = []
 def main(): 
     create_admin()
     load_words()
-    create_random_players(200)
+    create_random_players(50)
+    create_random_battles(400)
 
 
 def create_random_players(count): 
@@ -37,9 +38,22 @@ def create_random_players(count):
             nickname = random_username(), 
         )
 
+def create_random_battles(count): 
+    players = Player.objects.all()
+    for i in xrange(count): 
+        attacker = random.choice(players) 
+        defender = random.choice(players) 
+        winner = random.choice([attacker, defender])
 
-
-
+        battle = BattleLog(
+            attacker = attacker, 
+            defender = defender, 
+            winner = winner, 
+            start_time = datetime.datetime.now(),
+            end_time = datetime.datetime.now(),
+        )
+        print battle
+        battle.save()
 
 def create_admin():
     print "Creating user: admin"

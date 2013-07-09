@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Player Profile: {{ player.nickname }}{% endblock %}
+{% block header %}
+{% endblock %}
+{% block nav-profile %}<li class="active"><a href="/profiles/profile">My Account</a></li>{% endblock %}
+{% block content %}
+  <div class="title">
+    <h1>{{ player.nickname }}</h1>
+    <h2>{{ player.first_name }} {{ player.last_name }}</h2>
+  </div>
+  <div class="row">
+    <div class="span4">
+      <div class="playcount">
+        {{ player.win_count }}
+        <div class="countlabel">WINS</div>
+      </div>
+   </div>
+    <div class="span4">
+      <div class="playcount">
+        {{ player.loss_count }}
+        <div class="countlabel">LOSSES</div>
+      </div>
+   </div>
+    <div class="span4">
+      <div class="playcount">
+        {{ player.win_streak }}
+        <div class="countlabel">WIN STREAK</div>
+      </div>
+   </div>
+  </div>
+{% endblock %}

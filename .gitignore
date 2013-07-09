@@ -3,3 +3,7 @@ env
 *.un~
 
 *.db
+
+.DS_Store
+
+*.swp

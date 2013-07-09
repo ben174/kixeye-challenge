@@ -39,6 +39,7 @@ class BattleLogSerializer(serializers.ModelSerializer):
             attacker=Player.objects.get(pk=attrs['attacker']),
             defender=Player.objects.get(pk=attrs['defender']),
             winner=Player.objects.get(pk=attrs['winner']),
+            #TODO: parse times 
             start_time=datetime.datetime.now(),
             end_time=datetime.datetime.now(),
         )

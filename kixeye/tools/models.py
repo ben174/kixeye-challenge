@@ -26,6 +26,9 @@ class Player(models.Model):
 
     nickname = models.CharField(
         max_length=100,
+        unique=True,
+        null=False, 
+        blank=False,
     )
 
     win_count = models.IntegerField(
@@ -112,5 +115,11 @@ class BattleLog(models.Model):
         if (self.winner.pk != self.attacker.pk) and (
             self.winner.pk != self.defender.pk): 
             raise Exception("Winner must have been in the battle.")
+        # trigger user_did_battle, which increments/resets win counts
+        self.winner.user_did_battle(user_won=True)
+        if self.winner == self.attacker: 
+            self.defender.user_did_battle(user_won=False)
+        else: 
+            self.attacker.user_did_battle(user_won=False)
         super(BattleLog, self).save()
 
